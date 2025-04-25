@@ -1,0 +1,78 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>📌 작업 상세 보기</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+  <h1>📌 {{ task.title }}</h1>
+
+  <ul>
+    <li><strong>담당자:</strong> {{ task.assignee }}</li>
+    <li><strong>기간:</strong> {{ task.start_date }} ~ {{ task.end_date }}</li>
+    <li><strong>상태:</strong> {{ task.status }}</li>
+    <li><strong>우선순위:</strong> {{ task.priority }}</li>
+    <li><strong>진행률:</strong> {{ task.progress }}%</li>
+    <li><strong>완료:</strong> {% if task.is_done %}✅{% else %}❌{% endif %}</li>
+  </ul>
+
+  <div class="section">
+    <h2>📝 세부 내용</h2>
+    <textarea id="desc-input">{{ task.description }}</textarea>
+    <button onclick="updateDesc()">저장</button>
+  </div>
+
+  <div class="section">
+    <h2>📂 회의록</h2>
+    {% if meeting_notes %}
+      <ul>
+        {% for note in meeting_notes %}
+        <li>
+          <div class="note-title" onclick="toggleNote('{{ note.id }}')">
+            📄 {{ note.created_at|date:"Y.m.d H:i" }} - {{ note.title }}
+          </div>
+          <div class="note-content" id="note-{{ note.id }}">
+            <p>{{ note.content|linebreaksbr }}</p>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>회의록이 없습니다.</p>
+    {% endif %}
+  </div>
+
+  <script>
+    function updateDesc() {
+      const desc = document.getElementById('desc-input').value;
+      const csrftoken = '{{ csrf_token }}';
+      fetch(`/tasks/update/{{ task.id }}/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({
+          field: 'description',
+          value: desc
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('설명이 저장되었습니다!');
+        } else {
+          alert('저장에 실패했습니다.');
+        }
+      });
+    }
+
+    function toggleNote(id) {
+      const el = document.getElementById('note-' + id);
+      el.style.display = (el.style.display === 'none') ? 'block' : 'none';
+    }
+  </script>
+</body>
+</html>

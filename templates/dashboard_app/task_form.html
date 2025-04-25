@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ project.title }} - 작업 추가</title>
+</head>
+<body>
+    <h1>{{ project.title }}에 작업 추가</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">작업 추가</button>
+    </form>
+    <a href="{% url 'task_dashboard' %}">← 대시보드로 돌아가기</a>
+</body>
+</html>

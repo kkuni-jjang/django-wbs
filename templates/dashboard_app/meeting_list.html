@@ -1,0 +1,12 @@
+<h1>📝 회의록 목록</h1>
+<ul>
+  {% for note in notes %}
+    <li>
+      <a href="{% url 'meeting_detail' note.id %}">{{ note.title }}</a>
+      <small>({{ note.created_at|date:"Y-m-d H:i" }})</small>
+    </li>
+  {% empty %}
+    <li>작성된 회의록이 없습니다.</li>
+  {% endfor %}
+</ul>
+<a href="{% url 'add_meeting_note' %}">➕ 회의록 작성</a>

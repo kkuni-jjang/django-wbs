@@ -1,0 +1,6 @@
+<h2>✏️ 회의록 작성</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">저장</button>
+</form>

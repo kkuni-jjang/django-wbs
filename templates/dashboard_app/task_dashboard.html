@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>WBS Project</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+ <style>
+    .priority-high {
+      background-color: #ffdddd;
+      color: #d10000;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+    .priority-medium {
+      background-color: #fff4cc;
+      color: #b27f00;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+    .priority-low {
+      background-color: #eeeeee;
+      color: #555;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+       .view-tabs {
+      margin-bottom: 20px;
+    }
+    .view-tabs a {
+      margin-right: 10px;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      background-color: #dee2e6;
+      color: #000;
+    }
+    .view-tabs a.active {
+      background-color: #339af0;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="page-title">WBS project</h1>
+
+<div class="view-tabs">
+  <a href="{% url 'task_dashboard' %}" class="{% if view_name == 'task_dashboard' %}active{% endif %}">📋 전체</a>
+  <a href="{% url 'board_view' %}" class="{% if view_name == 'board_view' %}active{% endif %}">📊 보드</a>
+  <a href="{% url 'timeline_view' %}" class="{% if view_name == 'timeline_view' %}active{% endif %}">📅 타임라인</a>
+</div>
+
+  <div class="top-buttons">
+    <a href="{% url 'add_task' %}">➕ 작업 추가</a>
+  </div>
+
+  <table class="task-table">
+    <thead>
+      <tr>
+        <th>작업명</th>
+        <th>담당자</th>
+        <th>시작일</th>
+        <th>종료일</th>
+        <th>상태</th>
+        <th>우선순위</th>
+        <th>진행률</th>
+        <th>완료</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for task in tasks %}
+      <tr data-id="{{ task.id }}">
+        <td><a href="{% url 'task_detail' task.id %}">{{ task.title }}</a></td>
+        <td contenteditable="true" class="editable-task" data-field="assignee">{{ task.assignee }}</td>
+        <td>{{ task.start_date|date:"Y-m-d" }}</td>
+        <td>{{ task.end_date|date:"Y-m-d" }}</td>
+        <td>
+          <select class="editable-task-select" data-field="status">
+            {% for s in task.STATUS_CHOICES %}
+              <option value="{{ s.0 }}" {% if task.status == s.0 %}selected{% endif %}>{{ s.1 }}</option>
+            {% endfor %}
+          </select>
+        </td>
+        <td>
+          <span class="{% if task.priority == '높음' %}priority-high{% elif task.priority == '중간' %}priority-medium{% else %}priority-low{% endif %}">
+            {{ task.priority }}
+          </span>
+        </td>
+        <td>
+          <input type="range" class="editable-task-input" data-field="progress" min="0" max="100" value="{{ task.progress }}">
+          <span>{{ task.progress }}%</span>
+        </td>
+        <td>
+          <input type="checkbox" class="editable-task-checkbox" data-field="is_done" {% if task.is_done %}checked{% endif %}>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8">등록된 작업이 없습니다.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 class="section-title">📝 회의록</h2>
+  <ul class="meeting-note-list">
+    {% for note in meeting_notes %}
+      <li>
+        <strong>{{ note.created_at|date:"Y.m.d" }}</strong>
+        <a href="{% url 'meeting_detail' note.id %}">{{ note.title }}</a>
+      </li>
+    {% empty %}
+      <li>회의록이 없습니다.</li>
+    {% endfor %}
+  </ul>
+
+  <div class="top-buttons">
+    <a href="{% url 'add_meeting_note' %}">➕ 회의록 추가</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const csrftoken = '{{ csrf_token }}';
+
+      function updateTask(taskId, field, value) {
+        fetch(`/tasks/update/${taskId}/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+          },
+          body: JSON.stringify({ field, value })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (!data.success) alert('저장 실패!');
+        });
+      }
+
+      document.querySelectorAll('.editable-task').forEach(cell => {
+        cell.addEventListener('blur', () => {
+          const taskId = cell.closest('tr').dataset.id;
+          const field = cell.dataset.field;
+          const value = cell.innerText;
+          updateTask(taskId, field, value);
+        });
+      });
+
+      document.querySelectorAll('.editable-task-input').forEach(input => {
+        input.addEventListener('change', () => {
+          const taskId = input.closest('tr').dataset.id;
+          const field = input.dataset.field;
+          const value = input.value;
+          updateTask(taskId, field, value);
+        });
+      });
+
+      document.querySelectorAll('.editable-task-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', () => {
+          const taskId = checkbox.closest('tr').dataset.id;
+          const field = checkbox.dataset.field;
+          const value = checkbox.checked;
+          updateTask(taskId, field, value);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

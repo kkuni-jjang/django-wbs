@@ -1,0 +1,87 @@
+<!-- templates/dashboard_app/board_view.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>보드별</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+    .kanban-board {
+      display: flex;
+      gap: 20px;
+    }
+    .kanban-column {
+      flex: 1;
+      background-color: #f1f3f5;
+      border-radius: 8px;
+      padding: 10px;
+    }
+    .kanban-column h3 {
+      text-align: center;
+    }
+    .kanban-card {
+      background: #fff;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+    }
+    .kanban-card small {
+      color: #888;
+    }
+        .view-tabs {
+      margin-bottom: 20px;
+    }
+    .view-tabs a {
+      margin-right: 10px;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      background-color: #dee2e6;
+      color: #000;
+    }
+    .view-tabs a.active {
+      background-color: #339af0;
+      color: white;
+    }
+    .board-column.계획중 {
+  background-color: #f1f3f5;
+}
+.board-column.진행중 {
+  background-color: #ffe3e3;
+}
+.board-column.완료 {
+  background-color: #e3f2fd;
+}
+
+  </style>
+
+</head>
+<body>
+  <h1 class="page-title">📊 상태별 보드</h1>
+
+    <div class="view-tabs">
+    <a href="{% url 'task_dashboard' %}" class="{% if view_name == 'task_dashboard' %}active{% endif %}">📋 전체</a>
+    <a href="{% url 'board_view' %}" class="{% if view_name == 'board_view' %}active{% endif %}">📌 보드</a>
+    <a href="{% url 'timeline_view' %}" class="{% if view_name == 'timeline_view' %}active{% endif %}">📅 타임라인</a>
+  </div>
+
+  <div class="kanban-board">
+  {% for status, _ in status_choices %}
+    <div class="kanban-column board-column {{ status|cut:" " }}">
+      <h3>{{ status }}</h3>
+      {% for task in tasks %}
+        {% if task.status == status %}
+        <div class="kanban-card">
+          <strong>{{ task.title }}</strong><br>
+          <small>{{ task.assignee }} · {{ task.progress }}%</small>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
+
+</body>
+</html>

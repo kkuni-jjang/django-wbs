@@ -1,0 +1,127 @@
+body {
+  font-family: 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  margin: 40px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+.top-buttons {
+  margin-bottom: 20px;
+}
+
+.top-buttons a {
+  background-color: #f1f3f5;
+  color: #2c7be5;
+  font-weight: 600;
+  padding: 6px 12px;
+  text-decoration: none;
+  border-radius: 6px;
+  margin-right: 10px;
+  transition: 0.2s;
+}
+
+.top-buttons a:hover {
+  background-color: #e9ecef;
+}
+
+.task-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+}
+
+.task-table th,
+.task-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 14px;
+}
+
+.task-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  color: #495057;
+  text-align: left;
+}
+
+.task-table td input[type="date"],
+.task-table td select,
+.task-table td input[type="range"] {
+  width: 100%;
+  padding: 4px 6px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.task-table td input[type="checkbox"] {
+  transform: scale(1.3);
+  margin-left: 5px;
+}
+
+.badge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  display: inline-block;
+  line-height: 1.4;
+}
+
+.badge-계획중 { background-color: #adb5bd; }
+.badge-진행중 { background-color: #339af0; }
+.badge-완료   { background-color: #51cf66; }
+
+.badge-낮음   { background-color: #74c0fc; }
+.badge-중간   { background-color: #fcc419; }
+.badge-높음   { background-color: #fa5252; }
+
+.progress-bar {
+  background-color: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+  height: 8px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: #4dabf7;
+}
+
+.section-title {
+  font-size: 20px;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.meeting-note-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 0;
+}
+
+.meeting-note-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #e9ecef;
+  font-size: 14px;
+}
+
+.meeting-note-list li strong {
+  color: #333;
+  margin-right: 5px;
+}

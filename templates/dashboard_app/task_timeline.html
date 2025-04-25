@@ -1,0 +1,100 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>📅 Gantt 타임라인</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <style>
+    .gantt-chart {
+      margin-top: 30px;
+    }
+    .gantt-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .gantt-label {
+      width: 150px;
+      font-weight: bold;
+      text-align: right;
+      margin-right: 10px;
+    }
+    .gantt-bar-container {
+      flex: 1;
+      height: 20px;
+      background-color: #f1f3f5;
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .gantt-bar {
+      height: 100%;
+      background-color: #339af0;
+      border-radius: 4px;
+      position: absolute;
+      top: 0;
+    }
+    .view-tabs {
+      margin-bottom: 20px;
+    }
+    .view-tabs a {
+      margin-right: 10px;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      background-color: #dee2e6;
+      color: #000;
+    }
+    .view-tabs a.active {
+      background-color: #339af0;
+      color: white;
+    }
+    .page-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .month-header {
+      display: flex;
+      margin-left: 160px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .month-header div {
+      text-align: center;
+      border-right: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="page-title">📅 Gantt 타임라인 뷰</h1>
+
+  <div class="view-tabs">
+    <a href="{% url 'task_dashboard' %}" class="{% if view_name == 'task_dashboard' %}active{% endif %}">📋 전체</a>
+    <a href="{% url 'board_view' %}" class="{% if view_name == 'board_view' %}active{% endif %}">📌 보드</a>
+    <a href="{% url 'timeline_view' %}" class="{% if view_name == 'timeline_view' %}active{% endif %}">📅 타임라인</a>
+  </div>
+
+  {% if month_labels %}
+  <div class="month-header">
+    {% for month in month_labels %}
+      <div style="width: {{ month.width }}px;">{{ month.label }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="gantt-chart">
+    {% for task in tasks %}
+      <div class="gantt-row">
+        <div class="gantt-label">{{ task.title }}</div>
+        <div class="gantt-bar-container">
+          <div class="gantt-bar" style="left:{{ task.offset|add:"0" }}px; width:{{ task.duration|add:"0" }}px;"></div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</body>
+</html>
